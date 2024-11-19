@@ -1,21 +1,20 @@
 ##################################################
 #
-# ECO 6416: Applied Business Research Tools
+# QMB 6316.0081 R for Business Analytics
 #
 # Logistic Regression Demo
 # Examples of Model Specification
 #
 # Lealand Morin, Ph.D.
-# Assistant Professor
-# Department of Economics
+# Adjunct Professor
 # College of Business
 # University of Central Florida
 #
-# August 26, 2023
+# November 18, 2024
 #
 ##################################################
 #
-# ECO6416_Logistic_Hospital gives an example of
+# Logistic_Hospital gives an example of
 #   a logistic regression model
 #   and compares with linear model specifications.
 #
@@ -39,7 +38,7 @@ rm(list=ls(all=TRUE))
 # 4. Copy the command from the Console in the bottom left pane.
 # 5. Paste the command below:
 
-setwd("C:/Users/le279259/OneDrive - University of Central Florida/Desktop/ECO6416_Demos")
+setwd("~/GitHub/QMB6316F24/demo_08_logit_regression")
 
 
 # Now, RStudio should know where your files are.
@@ -62,7 +61,7 @@ library(pROC)
 ##################################################
 
 # A sample dataset to predict patients' choice of hospital.
-hospital_choice <- read.csv('HOSPITAL13.csv')
+hospital_choice <- read.csv('HOSPITAL.csv')
 
 # Inspect the contents.
 summary(hospital_choice)
@@ -163,7 +162,7 @@ roc(response = hospital_choice[, 'D'],
 
 # Estimate a logistic regression model.
 logit_model_2 <- glm(data = hospital_choice,
-                     formula = D ~ DISTANCE + INCOME + OLD, # Modify this line.
+                     formula = D ~ DISTANCE + INCOME + OLD, 
                      family = 'binomial')
 
 # Output the results to screen.
@@ -194,7 +193,7 @@ roc(response = hospital_choice[, 'D'],
 # Estimate a logistic regression model.
 logit_model_3 <- glm(data = hospital_choice,
                      formula = D ~ DISTANCE + INCOME + OLD +
-                       OLD:DISTANCE, # Modify this line.
+                       OLD:DISTANCE, 
                      family = 'binomial')
 
 # Output the results to screen.

@@ -1,16 +1,15 @@
 ##################################################
 #
-# QMB 6358: Software Tools for Business Analytics
+# QMB 6316.0081 R for Business Analytics
 #
 # Merging datasets
 #
 # Lealand Morin, Ph.D.
-# Assistant Professor
-# Department of Economics
-# College of Business Administration
+# Adjunct Professor
+# College of Business
 # University of Central Florida
 #
-# September 21, 2020
+# November 19, 2024
 #
 ##################################################
 #
@@ -30,8 +29,7 @@ rm(list=ls(all=TRUE))
 
 
 # Set path for working directory.
-wd_path <- "~/Teaching/QMB6358_Fall_2021/GitRepo/QMB6358F21/demo_08_merging_in_R"
-setwd(wd_path)
+setwd("~/GitHub/QMB6316F24/demo_06_merging_data")
 
 
 

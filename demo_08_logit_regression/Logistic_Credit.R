@@ -1,21 +1,20 @@
 ##################################################
 #
-# ECO 6416.0028 Applied Business Research Tools
+# QMB 6316.0081 R for Business Analytics
 #
 # Logistic Regression Demo
 # Examples of Model Specification
 #
 # Lealand Morin, Ph.D.
-# Assistant Professor
-# Department of Economics
+# Adjunct Professor
 # College of Business
 # University of Central Florida
 #
-# August 26, 2023
+# November 18, 2024
 #
 ##################################################
 #
-# ECO6416_Logistic_Credit gives an example of OLS
+# Logistic_Credit gives an example of OLS
 #   and logistic regression using data imported from a spreadsheet.
 #
 # The variables in the dataset credit_data.csv are as follows:
@@ -57,7 +56,7 @@ rm(list=ls(all=TRUE))
 # 4. Copy the command from the Console in the bottom left pane.
 # 5. Paste the command below:
 
-setwd("C:/Users/le279259/OneDrive - University of Central Florida/Desktop/ECO6416_Demos")
+setwd("~/GitHub/QMB6316F24/demo_08_logit_regression")
 
 
 # Now, RStudio should know where your files are.
