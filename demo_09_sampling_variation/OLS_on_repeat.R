@@ -1,27 +1,26 @@
 ##################################################
 #
-# ECO 6416.0028 Applied Business Research Tools
+# QMB 6316.0081 R for Business Analytics
 #
 # OLS Regression Demo
 # Simulation with repeated estimation
 #
 # Lealand Morin, Ph.D.
-# Assistant Professor
-# Department of Economics
+# Adjunct Professor
 # College of Business
 # University of Central Florida
 #
-# August 25, 2023
+# November 20, 2024
 #
 ##################################################
 #
-# ECO6416_OLS_On_Repeat gives an example of OLS regression
+# OLS_on_repeat gives an example of OLS regression
 #   using simulated data.
 #   It repeats the estimation several times to get a
 #   distribution of estimates.
 #
 # Dependencies:
-#   ECO6416_tools.R
+#   sim_tools.R
 #
 ##################################################
 
@@ -43,7 +42,7 @@ rm(list=ls(all=TRUE))
 # 4. Copy the command from the Console in the bottom left pane.
 # 5. Paste the command below:
 
-setwd("C:/Users/le279259/OneDrive - University of Central Florida/Desktop/ECO6416_Demos")
+setwd("~/GitHub/QMB6316F24/demo_09_sampling_variation")
 
 
 # Now, RStudio should know where your files are.
@@ -56,11 +55,11 @@ setwd("C:/Users/le279259/OneDrive - University of Central Florida/Desktop/ECO641
 
 
 # Read function for sampling data.
-source('ECO6416_tools.R')
-# This is the same as running the ECO6416_tools.R script first.
-# It assumes that the script is saved in the same working folder.
+source('../tools/sim_tools.R')
+# This is the same as running the sim_tools.R script first.
+# It assumes that the script is saved in a folder called 'tools'.
 
-# The file ECO6416_tools.R must be in the working directory.
+# The file sim_tools.R must be in a folder called 'tools'.
 # If you an error message, make sure that the file is
 # located in your working directory.
 # Also make sure that the name has not changed.
@@ -70,29 +69,29 @@ source('ECO6416_tools.R')
 # Setting the Parameters
 ##################################################
 
-# Dependent Variable: Automobile values
+# Dependent Variable: Property values (in Millions)
 
-beta_0          <-   50000     # Intercept
-beta_mileage    <- -  0.20     # Slope coefficient for mileage
-beta_accident   <- -  5000     # Slope coefficient for accident
-beta_damage     <- - 20000     # Slope coefficient for damage
-# beta_damage     <-       0   # Alternate Slope coefficient for damage
+beta_0          <-   0.10    # Intercept
+beta_income     <-   5.00    # Slope ceofficient for income
+beta_cali       <-   0.25    # Slope coefficient for California
+beta_earthquake <- - 0.50    # Slope coefficient for earthquake
+# beta_earthquake <- - 0.00    # Slope coefficient for earthquake
 
-# Distribution of mileage.
-avg_mileage <- 50000
-sd_mileage  <- 10000
+# Distribution of incomes (also in millions).
+avg_income <- 0.1
+sd_income <- 0.01
 
-# Extra parameter for measurement error in mileage.
-measurement_error_mileage <- 10000
+# Extra parameter for measurement error in income.
+measurement_error_income <- 0.01
 
-# Fraction of dataset in an accident.
-pct_accident <- 0.4
+# Fraction of dataset in California.
+pct_in_cali <- 0.5
 
-# Frequency of damages (only after an accident).
-prob_damage <- 0.10
+# Frequency of earthquakes (only in California).
+prob_earthquake <- 0.05
 
 # Additional terms:
-sigma_2 <- 4000    # Variance of error term
+sigma_2 <- 0.1        # Variance of error term
 num_obs <- 100      # Number of observations in dataset
 
 # Set the number of replications in the simulation.
@@ -103,20 +102,18 @@ num_replications <- 1000
 # Generating the Fixed Data
 ##################################################
 
-# Call the other_sample() function from ECO6416_tools_2.R.
-car_data <- other_sample(beta_0, beta_mileage, beta_accident, beta_damage,
-                         avg_mileage, sd_mileage, pct_accident, prob_damage,
-                         sigma_2, num_obs)
+# Call the housing_sample function from ECO6416_Sim_Data.R.
+housing_data <- housing_sample(beta_0, beta_income, beta_cali, beta_earthquake,
+                               avg_income, sd_income, pct_in_cali, prob_earthquake,
+                               sigma_2, num_obs)
 
 
-# Summarize the data to inspect for data quality.
-summary(car_data)
+# Summarize the data.
+summary(housing_data)
 
-# Check that damages occurred only in accident:
-table(car_data[, 'accident'], car_data[, 'damage'])
-# Data errors are the most frequent cause of problems in model-building.
-
-# Run it again if no damages occurred.
+# Check that earthquakes occurred only in California:
+table(housing_data[, 'in_cali'], housing_data[, 'earthquake'])
+# Data errors are the largest cause of problems in model-building.
 
 
 ##################################################
@@ -125,17 +122,19 @@ table(car_data[, 'accident'], car_data[, 'damage'])
 ##################################################
 
 #--------------------------------------------------
-# Assume that true mileage is not observed but some variables
-# that are correlated with mileage are available.
+# Assume that true income is not observed but some variables
+# that are correlated with income are available.
 #--------------------------------------------------
 
-# mileage measure 1.
-car_data[, 'mileage_1'] <- car_data[, 'mileage'] +
-  rnorm(n = num_obs, mean = 0, sd = measurement_error_mileage)
+# Income measure 1.
+housing_data[, 'income_1'] <- 0
+housing_data[, 'income_1'] <- housing_data[, 'income'] +
+  rnorm(n = num_obs, mean = 0, sd = measurement_error_income)
 
-# mileage measure 2.
-car_data[, 'mileage_2'] <- car_data[, 'mileage'] +
-  rnorm(n = num_obs, mean = 0, sd = measurement_error_mileage)
+# Income measure 2.
+housing_data[, 'income_2'] <- 0
+housing_data[, 'income_2'] <- housing_data[, 'income'] +
+  rnorm(n = num_obs, mean = 0, sd = measurement_error_income)
 
 
 ##################################################
@@ -144,8 +143,8 @@ car_data[, 'mileage_2'] <- car_data[, 'mileage'] +
 ##################################################
 
 # Set the list of variables for the estimation.
-list_of_variables <- c('mileage', 'accident', 'damage')
-# list_of_variables <- c('mileage_1', 'accident', 'damage')
+list_of_variables <- c('income', 'in_cali', 'earthquake')
+# list_of_variables <- c('income_1', 'in_cali', 'earthquake')
 
 # Add beta_0 to the beginning for the full list.
 full_list_of_variables <- c('intercept', list_of_variables)
@@ -153,10 +152,10 @@ full_list_of_variables <- c('intercept', list_of_variables)
 # Create an empty data frame to store the results.
 reg_results <- data.frame(reg_num = 1:num_replications)
 reg_results[, full_list_of_variables] <- 0
-reg_results[, c('mileage', 'mileage_1', 'mileage_2')] <- 0
+reg_results[, c('income', 'income_1', 'income_2')] <- 0
 
 
-# Generate repeated realizations of the car_data dataset.
+# Generate repeated realizations of the housing_data dataset.
 for (reg_num in 1:num_replications) {
 
   # Print a progress report.
@@ -169,17 +168,17 @@ for (reg_num in 1:num_replications) {
   # Repeat again and again, replacing only the epsilon values.
 
   # Generate the error term, which includes everything we do not observe.
-  car_data[, 'epsilon'] <- rnorm(n = num_obs, mean = 0, sd = sigma_2)
+  housing_data[, 'epsilon'] <- rnorm(n = num_obs, mean = 0, sd = sigma_2)
 
   # Finally, recalculate the simulated value of house prices,
   # according to the regression equation.
-  car_data[, 'car_price'] <-
+  housing_data[, 'house_price'] <-
     beta_0 +
-    beta_mileage * car_data[, 'mileage'] +
-    beta_accident * car_data[, 'accident'] +
-    beta_damage * car_data[, 'damage'] +
-    car_data[, 'epsilon']
-  # Each time, this replaces the car_price with a different version
+    beta_income * housing_data[, 'income'] +
+    beta_cali * housing_data[, 'in_cali'] +
+    beta_earthquake * housing_data[, 'earthquake'] +
+    housing_data[, 'epsilon']
+  # Each time, this replaces the house_price with a different version
   # of the error term.
 
 
@@ -188,11 +187,11 @@ for (reg_num in 1:num_replications) {
   ##################################################
 
   # Specify the formula to estimate.
-  lm_formula <- as.formula(paste('car_price ~ ',
+  lm_formula <- as.formula(paste('house_price ~ ',
                                  paste(list_of_variables, collapse = ' + ')))
 
   # Estimate a regression model.
-  lm_full_model <- lm(data = car_data,
+  lm_full_model <- lm(data = housing_data,
                       formula = lm_formula)
   # Note that the normal format is:
   # model_name <- lm(data = name_of_dataset, formula = Y ~ X_1 + x_2 + x_K)
@@ -227,35 +226,35 @@ hist(reg_results[, 'intercept'],
      ylab = 'Frequency',
      breaks = 20)
 
-# This will be blank if mileage is not in the regression:
-hist(reg_results[, 'mileage'],
-     main = 'Distribution of beta_mileage',
+# This will be blank if income is not in the regression:
+hist(reg_results[, 'income'],
+     main = 'Distribution of beta_income',
      xlab = 'Estimated Coefficient',
      ylab = 'Frequency',
      breaks = 20)
 
-# This will be blank if mileage_1 is not in the regression:
-hist(reg_results[, 'mileage_1'],
-     main = 'Distribution of beta_mileage_1',
+# This will be blank if income_1 is not in the regression:
+hist(reg_results[, 'income_1'],
+     main = 'Distribution of beta_income_1',
      xlab = 'Estimated Coefficient',
      ylab = 'Frequency',
      breaks = 20)
 
-# This will be blank if mileage_2 is not in the regression:
-hist(reg_results[, 'mileage_2'],
-     main = 'Distribution of beta_mileage_2',
+# This will be blank if income_2 is not in the regression:
+hist(reg_results[, 'income_2'],
+     main = 'Distribution of beta_income_2',
      xlab = 'Estimated Coefficient',
      ylab = 'Frequency',
      breaks = 20)
 
-hist(reg_results[, 'accident'],
-     main = 'Distribution of beta_accident',
+hist(reg_results[, 'in_cali'],
+     main = 'Distribution of beta_cali',
      xlab = 'Estimated Coefficient',
      ylab = 'Frequency',
      breaks = 20)
 
-hist(reg_results[, 'damage'],
-     main = 'Distribution of beta_damage',
+hist(reg_results[, 'earthquake'],
+     main = 'Distribution of beta_earthquake',
      xlab = 'Estimated Coefficient',
      ylab = 'Frequency',
      breaks = 20)

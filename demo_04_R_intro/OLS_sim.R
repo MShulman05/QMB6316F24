@@ -67,9 +67,9 @@ getwd()
 # Read function for sampling data.
 source('../tools/sim_tools.R')
 # This is the same as running the sim_tools.R script first.
-# It assumes that the script is saved in the same working folder.
+# It assumes that the script is saved in a folder called 'tools'.
 
-# The file sim_tools.R must be in the working directory.
+# The file sim_tools.R must be in a folder called 'tools'.
 # If you an error message, make sure that the file is
 # located in your working directory.
 # Also make sure that the name has not changed.

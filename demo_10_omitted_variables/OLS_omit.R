@@ -1,26 +1,25 @@
 ##################################################
 #
-# ECO 6416.0028 Applied Business Research Tools
+# QMB 6316.0081 R for Business Analytics
 #
 # OLS Regression Demo
 # Regression with Simulated Data: Omitted Variables
 #
 # Lealand Morin, Ph.D.
-# Assistant Professor
-# Department of Economics
+# Adjunct Professor
 # College of Business
 # University of Central Florida
 #
-# August 25, 2023
+# November 20, 2024
 #
 ##################################################
 #
-# ECO6416_OLS_Omit uses simulated data to create an example
+# OLS_omit uses simulated data to create an example
 #   that illustrates the change in estimates resulting from
 #   omitted variables.
 #
 # Dependencies:
-#   ECO6416_tools.R
+#   sim_tools.R
 #
 ##################################################
 
@@ -42,7 +41,7 @@ rm(list=ls(all=TRUE))
 # 4. Copy the command from the Console in the bottom left pane.
 # 5. Paste the command below:
 
-setwd("C:/Users/le279259/OneDrive - University of Central Florida/Desktop/ECO6416_Demos")
+setwd("~/GitHub/QMB6316F24/demo_10_omitted_variables")
 
 
 # Now, RStudio should know where your files are.
@@ -55,11 +54,11 @@ setwd("C:/Users/le279259/OneDrive - University of Central Florida/Desktop/ECO641
 
 
 # Read function for sampling data.
-source('ECO6416_tools.R')
-# This is the same as running the ECO6416_tools.R script first.
-# It assumes that the script is saved in the same working folder.
+source('../tools/sim_tools.R')
+# This is the same as running the sim_tools.R script first.
+# It assumes that the script is saved in a folder called 'tools'.
 
-# The file ECO6416_tools.R must be in the working directory.
+# The file sim_tools.R must be in a folder called 'tools'.
 # If you an error message, make sure that the file is
 # located in your working directory.
 # Also make sure that the name has not changed.
