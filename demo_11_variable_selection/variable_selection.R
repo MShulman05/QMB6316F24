@@ -1,21 +1,20 @@
 ##################################################
 #
-# ECO 6416.0028 Applied Business Research Tools
+# QMB 6316.0081 R for Business Analytics
 #
 # OLS Regression Demo
 # Examples of Model Specification
 #
 # Lealand Morin, Ph.D.
-# Assistant Professor
-# Department of Economics
+# Adjunct Professor
 # College of Business
 # University of Central Florida
 #
-# August 26, 2023
+# December 2, 2024
 #
 ##################################################
 #
-# ECO6416_Life_Exp is an example of variable selection
+# variable_selection is an example of variable selection
 #   in OLS regression models.
 #
 ##################################################
@@ -38,7 +37,7 @@ rm(list=ls(all=TRUE))
 # 4. Copy the command from the Console in the bottom left pane.
 # 5. Paste the command below:
 
-setwd("C:/Users/le279259/OneDrive - University of Central Florida/Desktop/ECO6416_Demos")
+setwd("~/GitHub/QMB6316F24/demo_11_variable_selection")
 
 
 # Now, RStudio should know where your files are.

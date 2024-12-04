@@ -1,23 +1,22 @@
 ##################################################
 #
-# ECO 6416.0028 Applied Business Research Tools
+# QMB 6316.0081 R for Business Analytics
 #
-# Data Mining Demo
+# Data Mining Exercise
 # Data Mining over many Irrelevant Variables
 # Includes variables with measurement error
 # and two highly correlated substitutes.
 #
 # Lealand Morin, Ph.D.
-# Assistant Professor
-# Department of Economics
+# Adjunct Professor
 # College of Business
 # University of Central Florida
 #
-# August 25, 2023
+# December 2, 2024
 #
 ##################################################
 #
-# ECO6416_Data_Mining_A5 gives an example of a simple form
+# data_mining_A5 gives an example of a simple form
 #   of data mining with OLS regression using simulated data.
 #   It estimates a model that illustrates the effects of
 #   measurement error, correlated variables and irrelevant variables.
@@ -42,7 +41,7 @@ rm(list=ls(all=TRUE))
 # 4. Copy the command from the Console in the bottom left pane.
 # 5. Paste the command below:
 
-setwd("C:/Users/le279259/OneDrive - University of Central Florida/Desktop/ECO6416_Demos")
+setwd("~/GitHub/QMB6316F24/assignment_05")
 
 
 # Now, RStudio should know where your files are.
@@ -55,11 +54,11 @@ setwd("C:/Users/le279259/OneDrive - University of Central Florida/Desktop/ECO641
 
 
 # Read function for sampling data.
-source('ECO6416_tools.R')
-# This is the same as running the ECO6416_tools.R script first.
-# It assumes that the script is saved in the same working folder.
+source('../tools/sim_tools.R')
+# This is the same as running the sim_tools.R script first.
+# It assumes that the script is saved in a folder called 'tools'.
 
-# The file ECO6416_tools.R must be in the working directory.
+# The file sim_tools.R must be in a folder called 'tools'.
 # If you an error message, make sure that the file is
 # located in your working directory.
 # Also make sure that the name has not changed.
