@@ -1,0 +1,255 @@
+---
+title: "Tractor Analysis"
+format: html
+editor: visual
+self-contained: true
+code-fold: true
+toc: true
+theme: minty
+execute: 
+  echo: false
+  warning: false
+---
+
+# Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. 
+R code is entered in blocks denoted by special symbols
+and the text is displayed on the page.
+
+This demonstration will create an html document with the results of 
+the analysis of used tractor prices. 
+This document can be viewed in any internet browser.
+
+## Parameters
+
+The header of the `qmd` file for this document 
+declares several settings for the generation of the Quarto report.
+The `format: html` option
+and `toc: true` will generate a table of contents 
+based on the headings in the document, 
+complete with links to those sections. 
+
+Other parameters relate to formatting and determine
+what is rendered in the document.
+The `echo: false` option disables the printing of code, 
+so that only the output is displayed.
+The `warning: false` option suppresses any warning messages, 
+which are the analyst's business but would not appear in a presentation
+(assuming the analysts has solved any related problems, of course).
+
+
+# Analysis of Used Tractor Sales
+
+## Preparing the Workspace
+
+First, I loaded the required packages, 
+for which it is not necessary to print output.
+
+
+```{r}
+
+# Load required libraries.
+library(tidyverse)
+library(readxl)
+
+# No need to set the working directory, 
+# since it will automatically 
+# use the files in the same folder.
+
+
+```
+
+## Initial Inspection of the Data
+
+Then I read in all the data and joined it together, 
+then generated new variables, all in one command.
+
+
+```{r}
+
+
+tractor_data <- read_xlsx("tractor_data.xlsx", sheet = "Sales") %>%
+  left_join(read_xlsx("tractor_data.xlsx", sheet = "Specs")) %>%
+  left_join(read_xlsx("tractor_data.xlsx", sheet = "Cabs")) %>%
+  mutate(cab_orig = cab, 
+         cab = ifelse(is.na(cab), 0, cab), 
+         log_saleprice = log(saleprice), 
+         squared_horsepower = horsepower^2)
+
+# Inspect the contents one more time.
+summary(tractor_data)
+```
+
+
+## Choosing the Dependent Variable
+
+### Plotting the Variables
+
+First, plot a histogram of the tractor prices, 
+without any transformation. 
+This time, I will use the `geom_histogram` function 
+from the `ggplot2` graphics library in the tidyverse.
+
+```{r}
+
+ggplot(tractor_data) +
+  geom_histogram(aes(saleprice))
+
+```
+
+Notice that there are some very large values.
+The distribution is highly skewed. 
+Then, I considered taking logs to bring the outliers closer to the others.
+
+
+
+```{r}
+ggplot(tractor_data) +
+  geom_histogram(aes(log_saleprice))
+```
+
+This looks much better behaved: the distribution is nearly symmetric 
+and it has a normal shape.
+I would consider this as the dependent variable on these grounds alone.
+However, we can estimate two models to gather more evidence for this decision.
+
+
+### Comparison with Regression Models
+
+The first regression model
+is a linear model for dollar sale price.
+
+
+```{r}
+
+# Estimate a regression model.
+lm_model_1 <- lm(data = tractor_data,
+                 formula = saleprice ~ horsepower + age + enghours +
+                   diesel + fwd + manual + johndeere +
+                   cab +
+                   spring + summer + winter)
+
+# Output the results to screen.
+summary(lm_model_1)
+```
+
+This model suggests that the premium for a John Deere
+tractor is over $13,000, regardless of the type of tractor.
+That seems implausible, given that most tractors cost only a
+few thousand dollars.
+
+The next regression model
+is a linear model of the logarithm of the sale price.
+
+```{r}
+# Estimate a regression model.
+lm_model_2 <- lm(data = tractor_data,
+                 formula = log_saleprice ~ horsepower + age + enghours +
+                   diesel + fwd + manual + johndeere +
+                   cab +
+                   spring + summer + winter)
+
+# Output the results to screen.
+summary(lm_model_2)
+```
+
+
+This model suggests that the premium for a John Deere
+tractor is 30 percent above the value of a similar tractor of another brand.
+This models makes much more sense, 
+so we will use the logarithmic transformation of the sales price
+as the dependent variable.
+With this model, the coefficients are interpreted as 
+percentage changes in the value of tractors.
+Also, the R-squared is higher, even though it is not a direct comparison, 
+since the dependent variable is different. 
+Still, this model looks more promising.
+
+
+
+## Nonlinear Specification of Horsepower
+
+Consider a polynomial functional form for horsepower.
+The idea, suggested by a tractor dealer, 
+is that horsepower improves performance up to a limit,
+then the extra power does not add much value, 
+but still consumes more fuel, so it is more expensive to operate.
+
+If this theory is true, we expect that
+the coefficient for `horsepower` is positive
+and that the coefficient for `squared_horsepower` is negative. 
+These are the results:
+
+```{r}
+# Estimate a regression model.
+lm_model_3 <- lm(data = tractor_data,
+                 formula = log_saleprice ~ horsepower + squared_horsepower + 
+                   age + enghours +
+                   diesel + fwd + manual + johndeere +
+                   cab +
+                   spring + summer + winter)
+
+# Output the results to screen.
+summary(lm_model_3)
+```
+
+Both coefficients are significant and the signs are as expected, 
+which supports the theory of the polynomial form for the value of horsepower.
+
+
+## Seasonal Indicators
+
+Since the seasonal indicators do not appear to be significant, 
+estimate the model without those indicators.
+
+
+```{r}
+# Estimate a regression model.
+lm_model_3 <- lm(data = tractor_data,
+                 formula = log_saleprice ~ horsepower + squared_horsepower + 
+                   age + enghours +
+                   diesel + fwd + manual + johndeere +
+                   cab # +
+                   # spring + summer + winter
+                   )
+
+# Output the results to screen.
+summary(lm_model_3)
+```
+
+This is a better model, 
+as the R-squared is actually higher without these variables.
+More importantly, all the coefficients in this model are significant. 
+Therefore, this is the model I recommend for predicting the prices of used tractors. 
+
+## Conclusions
+
+With this model, we see that the value of a tractor 
+has a polynomial relationship with horsepower:
+the value increases to a point, then declines as 
+tractors with higher horsepower are more expensive to operate.
+
+The values of tractors decline as they age, 
+losing about 3 percent of value each year. 
+The value of tractors also declines with more use, 
+declining about 4 percent for every thousand hours of use.
+
+In terms of the features of the tractores, 
+those that run on diesel fuel ar worth about 20 percent more than 
+a similar tractor that runs on gasoline. 
+A four-wheel drivetrain adds about 26 percent to the value of a tractor.
+A tractor with manual transmission is worth about 15 percent less
+than a similar one with a manual transmission. 
+A tractor with a cab is worth about 48 percent more than a similar
+tractor without a cab. 
+
+
+
+Finally, a John Deere tractor is worth about 32 percent more than a similar tractor of another brand.
+
+

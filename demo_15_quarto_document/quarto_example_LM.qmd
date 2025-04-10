@@ -1,0 +1,69 @@
+---
+title: "Example"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+
+```{r}
+#| warning: false
+library(tidyverse)
+library(readxl)
+```
+
+
+```{r}
+#| warning: false
+tractor_data <- read_xlsx("tractor_data.xlsx", sheet = "Sales") %>%
+  left_join(read_xlsx("tractor_data.xlsx", sheet = "Specs")) %>%
+  left_join(read_xlsx("tractor_data.xlsx", sheet = "Cabs")) %>%
+  mutate(cab_orig = cab, 
+         cab = ifelse(is.na(cab), 0, cab), 
+         log_saleprice = log(saleprice), 
+         squared_horsepower = horsepower^2)
+
+# Inspect the contents one more time.
+summary(tractor_data)
+
+```
+
+
+
+```{r}
+#| warning: false
+
+# Estimate a regression model.
+lm_model_2 <- lm(data = tractor_data,
+                 formula = log_saleprice ~ horsepower + squared_horsepower + 
+                   age + enghours +
+                   diesel + fwd + manual + johndeere +
+                   cab # +
+                   # spring + summer + winter
+                 )
+
+# Output the results to screen.
+summary(lm_model_2)
+
+
+```

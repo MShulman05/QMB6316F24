@@ -39,8 +39,7 @@ rm(list=ls(all=TRUE))
 # 5. Paste the command below:
 
 
-setwd("~/GitHub/QMB6316F24/assignment_03")
-
+setwd("~/GitHub/newer_github/QMB6316F24/assignment_03")
 
 # Now, RStudio should know where your files are.
 
@@ -132,6 +131,23 @@ summary(tractor_full[tractor_full[, 'johndeere'] == 0, 'saleprice'])
 
 ##################################################
 # Estimating a Regression Model
+# Model 0: Linear model with only average log of dollar sale price
+##################################################
+
+lm_model_0 <- lm(data = tractor_full,
+                 formula = log_saleprice ~ 1)
+
+lm_model_0 <- lm(data = tractor_full,
+                 formula = saleprice ~ 1)
+
+# Output the results to screen.
+summary(lm_model_0)
+
+
+
+
+##################################################
+# Estimating a Regression Model
 # Model 3: Linear model for log of dollar sale price
 # Omit seasonal indicators
 ##################################################
@@ -191,10 +207,10 @@ summary(lm_model_4)
 
 # Estimate a regression model.
 lm_model_5 <- lm(data = tractor_full,
-                 formula = log_saleprice ~ horsepower + squared_horsepower +
+                 formula = log_saleprice ~ horsepower + squared_horsepower + 
                    age + enghours +
-                   cab +
-                   diesel + fwd + johndeere)
+                   diesel + fwd + manual + johndeere +
+                   cab)
 
 # Output the results to screen.
 summary(lm_model_5)
@@ -232,11 +248,10 @@ summary(lm_model_6)
 
 # Estimate a regression model.
 lm_model_7 <- lm(data = tractor_full,
-                 formula = log_saleprice ~ horsepower + squared_horsepower +
+                 formula = log_saleprice ~ horsepower + squared_horsepower + 
                    age + enghours +
-                   cab +
-                   # diesel + 
-                   fwd + johndeere + 
+                   diesel + fwd + manual + johndeere +
+                   cab + 
                    spring + summer + winter)
 
 # Output the results to screen.
@@ -251,13 +266,12 @@ summary(lm_model_7)
 
 # Estimate a regression model.
 lm_model_8 <- lm(data = tractor_full,
-                 formula = log_saleprice ~ horsepower + squared_horsepower +
+                 formula = log_saleprice ~ horsepower + squared_horsepower + 
                    age + enghours +
-                   cab +
-                   # diesel + 
-                   fwd + johndeere + 
+                   diesel + fwd + manual + johndeere +
+                   cab + 
                    spring + summer + winter +
-                   age:johndeere)
+                   enghours:johndeere)
 
 # Output the results to screen.
 summary(lm_model_8)
